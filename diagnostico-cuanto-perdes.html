@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>¿Cuánto Estás Perdiendo? — Estética AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@500&display=swap');
+
+:root {
+  --bg: #0A0812;
+  --bg2: #131019;
+  --purple: #8557F5;
+  --purple-l: #B594FF;
+  --purple-glow: rgba(133,87,245,0.18);
+  --white: #FFFFFF;
+  --gray: rgba(255,255,255,0.55);
+  --gray-d: rgba(255,255,255,0.30);
+  --red: #FF6B6B;
+  --green: #3DDB7F;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Glow ambiente fijo */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  padding: 0 24px;
+}
+
+/* ── HEADER / LOGO ── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 0 0;
+}
+
+.brand-ring {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(133,87,245,0.45);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-ring span {
+  font-size: 8px; font-weight: 700;
+  color: rgba(133,87,245,0.8);
+  letter-spacing: 0.05em;
+  font-family: 'DM Mono', monospace;
+}
+
+.brand-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-d);
+  letter-spacing: 0.04em;
+}
+
+/* ── SCREENS ── */
+.screen {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  padding: 32px 0 40px;
+  animation: fadeIn 0.4s ease;
+}
+
+.screen.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PROGRESS ── */
+.progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  margin-bottom: 36px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--purple-l));
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+}
+
+/* ── INTRO SCREEN ── */
+.kicker {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(133,87,245,0.8);
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+h1 em { font-style: normal; color: var(--purple-l); }
+
+.intro-body {
+  font-size: 16px;
+  color: var(--gray);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.intro-meta {
+  display: flex;
+  gap: 18px;
+  margin: 28px 0 36px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.intro-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.intro-meta-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+}
+
+.intro-meta-label {
+  font-size: 11px;
+  color: var(--gray-d);
+  letter-spacing: 0.04em;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--purple);
+  color: var(--white);
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  padding: 18px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+  margin-top: auto;
+}
+
+.btn:active { transform: scale(0.98); }
+.btn:hover { background: #9468FF; }
+
+.btn-arrow { font-size: 18px; transition: transform 0.15s; }
+.btn:hover .btn-arrow { transform: translateX(3px); }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(133,87,245,0.3);
+  color: var(--purple-l);
+}
+.btn-ghost:hover { background: rgba(133,87,245,0.08); }
+
+/* ── QUESTION SCREENS ── */
+.q-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-d);
+  margin-bottom: 14px;
+}
+
+.q-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg2);
+  border: 1.5px solid rgba(133,87,245,0.15);
+  border-radius: 10px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.option:hover {
+  border-color: rgba(133,87,245,0.45);
+  background: rgba(133,87,245,0.06);
+}
+
+.option.selected {
+  border-color: var(--purple);
+  background: rgba(133,87,245,0.12);
+}
+
+.option-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.option-check {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(133,87,245,0.35);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.option.selected .option-check {
+  background: var(--purple);
+  border-color: var(--purple);
+}
+
+.option.selected .option-check::after {
+  content: '✓';
+  font-size: 11px;
+  color: white;
+  font-weight: 700;
+}
+
+/* ── INPUT (pregunta 3) ── */
+.input-group {
+  margin-bottom: 24px;
+}
+
+.input-field {
+  width: 100%;
+  background: var(--bg2);
+  border: 1.5px solid rgba(133,87,245,0.18);
+  border-radius: 10px;
+  padding: 16px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input-field:focus { border-color: var(--purple); }
+.input-field::placeholder { color: var(--gray-d); }
+
+.input-prefix {
+  position: relative;
+}
+
+.input-prefix .input-field { padding-left: 36px; }
+
+.input-prefix::before {
+  content: '$';
+  position: absolute;
+  left: 18px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray);
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-help {
+  font-size: 12px;
+  color: var(--gray-d);
+  margin-top: 8px;
+}
+
+/* ── LOADING SCREEN ── */
+.loading-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.spinner {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 3px solid rgba(133,87,245,0.15);
+  border-top-color: var(--purple);
+  animation: spin 0.9s linear infinite;
+  margin-bottom: 28px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.loading-sub {
+  font-size: 14px;
+  color: var(--gray-d);
+}
+
+/* ── RESULT SCREEN ── */
+.result-kicker {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-d);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.result-number {
+  font-family: 'Syne', sans-serif;
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  text-align: center;
+  color: var(--purple-l);
+  line-height: 0.95;
+  margin: 10px 0 4px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 40px rgba(133,87,245,0.35);
+}
+
+.result-period {
+  text-align: center;
+  font-size: 14px;
+  color: var(--gray-d);
+  margin-bottom: 28px;
+}
+
+.context-line {
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray);
+  line-height: 1.55;
+  margin-bottom: 24px;
+  padding: 0 4px;
+}
+
+.context-line strong { color: var(--purple-l); font-weight: 600; }
+
+.result-annual {
+  background: var(--bg2);
+  border: 1px solid rgba(133,87,245,0.18);
+  border-radius: 12px;
+  padding: 18px 20px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.result-annual-label {
+  font-size: 12px;
+  color: var(--gray-d);
+  margin-bottom: 6px;
+}
+
+.result-annual-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ranking bar */
+.ranking-box {
+  background: rgba(133,87,245,0.06);
+  border: 1px solid rgba(133,87,245,0.18);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.ranking-label {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.ranking-label strong { color: var(--white); }
+
+.ranking-bar-track {
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.ranking-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--purple-l));
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+}
+
+.ranking-marks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--gray-d);
+}
+
+.disclaimer {
+  font-size: 12px;
+  color: var(--gray-d);
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 28px;
+  padding: 0 8px;
+}
+
+.result-cta-label {
+  text-align: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
+  line-height: 1.3;
+}
+
+.whatsapp-btn {
+  background: #25D366;
+}
+.whatsapp-btn:hover { background: #2EE676; }
+
+.footer-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--gray-d);
+  margin-top: 16px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 380px) {
+  h1 { font-size: 36px; }
+  .result-number { font-size: 46px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-ring"><span>EIA</span></div>
+    <span class="brand-name">esteticaia.uy</span>
+  </div>
+
+  <!-- ═══════════════════════════
+       PANTALLA 0 — INTRO
+  ═══════════════════════════ -->
+  <div class="screen active" id="screen-intro">
+    <span class="kicker">Diagnóstico gratuito · 60 segundos</span>
+    <h1>¿Cuánto<br>estás <em>perdiendo</em><br>por mes?</h1>
+    <p class="intro-body">3 preguntas rápidas. Te mostramos una estimación real de lo que tu estética está dejando sobre la mesa por tiempo de respuesta.</p>
+
+    <div class="intro-meta">
+      <div class="intro-meta-item">
+        <span class="intro-meta-num">3</span>
+        <span class="intro-meta-label">preguntas</span>
+      </div>
+      <div class="intro-meta-item">
+        <span class="intro-meta-num">60s</span>
+        <span class="intro-meta-label">duración</span>
+      </div>
+      <div class="intro-meta-item">
+        <span class="intro-meta-num">100%</span>
+        <span class="intro-meta-label">gratis</span>
+      </div>
+    </div>
+
+    <button class="btn" onclick="goTo('q1')">Empezar diagnóstico <span class="btn-arrow">→</span></button>
+  </div>
+
+  <!-- ═══════════════════════════
+       PANTALLA 1 — PREGUNTA 1
+  ═══════════════════════════ -->
+  <div class="screen" id="screen-q1">
+    <div class="progress-track"><div class="progress-fill" style="width:33%"></div></div>
+    <span class="q-label">Pregunta 1 de 3</span>
+    <h2 class="q-title">¿Cuántos mensajes recibís por semana aproximadamente?</h2>
+
+    <div class="options" id="opts-q1">
+      <div class="option" data-value="7" onclick="selectOption(this, 'q1')">
+        <span class="option-text">Menos de 10</span>
+        <span class="option-check"></span>
+      </div>
+      <div class="option" data-value="15" onclick="selectOption(this, 'q1')">
+        <span class="option-text">Entre 10 y 20</span>
+        <span class="option-check"></span>
+      </div>
+      <div class="option" data-value="27" onclick="selectOption(this, 'q1')">
+        <span class="option-text">Entre 20 y 35</span>
+        <span class="option-check"></span>
+      </div>
+      <div class="option" data-value="42" onclick="selectOption(this, 'q1')">
+        <span class="option-text">Más de 35</span>
+        <span class="option-check"></span>
+      </div>
+    </div>
+
+    <button class="btn" id="btn-q1" onclick="goTo('q2')" disabled style="opacity:0.4;pointer-events:none;">Siguiente <span class="btn-arrow">→</span></button>
+  </div>
+
+  <!-- ═══════════════════════════
+       PANTALLA 2 — PREGUNTA 2
+  ═══════════════════════════ -->
+  <div class="screen" id="screen-q2">
+    <div class="progress-track"><div class="progress-fill" style="width:66%"></div></div>
+    <span class="q-label">Pregunta 2 de 3</span>
+    <h2 class="q-title">¿Cuánto tardás en responder en promedio?</h2>
+
+    <div class="options" id="opts-q2">
+      <div class="option" data-value="0.05" onclick="selectOption(this, 'q2')">
+        <span class="option-text">Al toque</span>
+        <span class="option-check"></span>
+      </div>
+      <div class="option" data-value="0.20" onclick="selectOption(this, 'q2')">
+        <span class="option-text">Unas horas</span>
+        <span class="option-check"></span>
+      </div>
+      <div class="option" data-value="0.40" onclick="selectOption(this, 'q2')">
+        <span class="option-text">A veces se me pasa el día</span>
+        <span class="option-check"></span>
+      </div>
+    </div>
+
+    <button class="btn" id="btn-q2" onclick="goTo('q3')" disabled style="opacity:0.4;pointer-events:none;">Siguiente <span class="btn-arrow">→</span></button>
+  </div>
+
+  <!-- ═══════════════════════════
+       PANTALLA 3 — PREGUNTA 3
+  ═══════════════════════════ -->
+  <div class="screen" id="screen-q3">
+    <div class="progress-track"><div class="progress-fill" style="width:90%"></div></div>
+    <span class="q-label">Pregunta 3 de 3</span>
+    <h2 class="q-title">¿Cuál es el precio de tu servicio más vendido?</h2>
+
+    <div class="input-group">
+      <div class="input-prefix">
+        <input type="number" class="input-field" id="input-precio" placeholder="1.200" inputmode="numeric">
+      </div>
+      <p class="input-help">En pesos uruguayos. Ej: lifting de pestañas, depilación, manicura.</p>
+    </div>
+
+    <button class="btn" onclick="calcularResultado()">Ver mi resultado <span class="btn-arrow">→</span></button>
+  </div>
+
+  <!-- ═══════════════════════════
+       PANTALLA 4 — LOADING
+  ═══════════════════════════ -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <p class="loading-text">Calculando tu diagnóstico</p>
+      <p class="loading-sub">Comparando con estéticas de Uruguay...</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       PANTALLA 5 — RESULTADO
+  ═══════════════════════════ -->
+  <div class="screen" id="screen-result">
+    <span class="result-kicker">Estimás perder aproximadamente</span>
+    <div class="result-number" id="result-anual">$0</div>
+    <p class="result-period">por año en turnos no concretados</p>
+
+    <div class="result-annual">
+      <p class="result-annual-label">Eso es, por mes</p>
+      <p class="result-annual-num" id="result-mensual">$0</p>
+    </div>
+
+    <p class="context-line" id="context-line"></p>
+
+    <div class="ranking-box">
+      <p class="ranking-label" id="ranking-text">Cargando comparación...</p>
+      <div class="ranking-bar-track">
+        <div class="ranking-bar-fill" id="ranking-bar"></div>
+      </div>
+      <div class="ranking-marks">
+        <span>Responde lento</span>
+        <span>Responde al instante</span>
+      </div>
+    </div>
+
+    <p class="disclaimer">Esto no es ciencia exacta — es una estimación basada en patrones reales de estéticas en Uruguay, Argentina y Paraguay. Pero el problema es real.</p>
+
+    <p class="result-cta-label">¿Querés ver cómo se resuelve esto?</p>
+    <a class="btn whatsapp-btn" id="whatsapp-link" href="#" target="_blank">
+      <span>💬</span> Hablemos por WhatsApp
+    </a>
+    <p class="footer-note">Respuesta personalizada en minutos</p>
+  </div>
+
+</div>
+
+<script>
+let answers = { q1: null, q2: null, q3: null };
+
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function selectOption(el, question) {
+  // Deseleccionar hermanos
+  el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[question] = parseFloat(el.dataset.value);
+
+  // Habilitar botón siguiente
+  const btn = document.getElementById('btn-' + question);
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.pointerEvents = 'auto';
+}
+
+function formatMoney(num) {
+  return '$' + Math.round(num).toLocaleString('es-UY');
+}
+
+function animateNumber(elementId, finalValue, duration = 1100) {
+  const el = document.getElementById(elementId);
+  const start = 0;
+  const startTime = performance.now();
+
+  function tick(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // easeOutExpo para que arranque rápido y frene suave
+    const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+    const current = start + (finalValue - start) * eased;
+    el.textContent = formatMoney(current);
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = formatMoney(finalValue);
+  }
+  requestAnimationFrame(tick);
+}
+
+function calcularResultado() {
+  const precioInput = document.getElementById('input-precio').value;
+  const precio = parseFloat(precioInput) || 1200; // fallback si no completa
+  answers.q3 = precio;
+
+  goTo('loading');
+
+  setTimeout(() => {
+    // Turnos perdidos por semana según velocidad de respuesta (q2)
+    // Independiente del volumen de mensajes — más realista que un %
+    let turnosPerdidosSemana;
+    if (answers.q2 <= 0.05) turnosPerdidosSemana = 0.5;       // al toque
+    else if (answers.q2 <= 0.20) turnosPerdidosSemana = 1.5;  // unas horas
+    else turnosPerdidosSemana = 3;                             // se me pasa el día
+
+    // El volumen de mensajes ajusta levemente el número — más mensajes, más turnos en juego
+    const factorVolumen = answers.q1 <= 7 ? 0.7 : answers.q1 <= 15 ? 1 : answers.q1 <= 27 ? 1.3 : 1.6;
+
+    const precioServicio = answers.q3;
+    const turnosPerdidosMes = turnosPerdidosSemana * factorVolumen * 4;
+    const perdidaMensual = turnosPerdidosMes * precioServicio;
+    const perdidaAnual = perdidaMensual * 12;
+
+    // Animar ambos números con contador
+    animateNumber('result-anual', perdidaAnual, 1200);
+    animateNumber('result-mensual', perdidaMensual, 1200);
+
+    // Línea de contexto — facturación estimada en base al volumen de mensajes
+    const facturacionEstimada = answers.q1 * 4 * precioServicio * 0.6; // conversión aprox de mensajes a ventas
+    const pctFacturacion = Math.min(Math.round((perdidaMensual / facturacionEstimada) * 100), 45);
+    document.getElementById('context-line').innerHTML =
+      `Para una estética con ese volumen de consultas, esto representa aproximadamente <strong>${pctFacturacion}% de su facturación mensual.</strong>`;
+
+    // Ranking — basado en velocidad de respuesta (q2)
+    let percentil, rankingMsg;
+    if (answers.q2 <= 0.05) {
+      percentil = 85;
+      rankingMsg = 'Estás en el <strong>Top 15%</strong> de estéticas que responden rápido. Igual hay margen — un sistema automático te lleva al 100%.';
+    } else if (answers.q2 <= 0.20) {
+      percentil = 50;
+      rankingMsg = 'Estás en el <strong>promedio</strong> de estéticas en Uruguay. Hay mucho margen para mejorar tu velocidad de respuesta.';
+    } else {
+      percentil = 20;
+      rankingMsg = 'Estás en el <strong>20% que más tarda</strong> en responder. Esto significa que estás perdiendo más turnos de los que pensás.';
+    }
+
+    document.getElementById('ranking-text').innerHTML = rankingMsg;
+    document.getElementById('ranking-bar').style.width = percentil + '%';
+
+    // Armar mensaje de WhatsApp con contexto
+    const mensajeWsp = `Hola! Hice el diagnóstico de "¿Cuánto Estás Perdiendo?" y me dio que estoy perdiendo aprox ${formatMoney(perdidaMensual)} por mes. Quiero saber más sobre el sistema.`;
+    const numeroWsp = '59895830022';
+    const linkWsp = `https://wa.me/${numeroWsp}?text=${encodeURIComponent(mensajeWsp)}`;
+    document.getElementById('whatsapp-link').href = linkWsp;
+
+    goTo('result');
+  }, 1400);
+}
+</script>
+
+</body>
+</html>
